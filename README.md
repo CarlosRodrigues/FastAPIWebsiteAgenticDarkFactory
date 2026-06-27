@@ -81,6 +81,20 @@ Sit back. The orchestrator will now:
 
 1 . Documentation: Generate a report-[ID].md for your review and update the CSV audit log.
 
+## 👀 Viewing the Ontology (Jira-like Viewer)
+To visualize your parsed Features, User Stories, and Acceptance Criteria in a human-readable, Jira-like board, you can run the built-in FastAPI viewer.
+
+Make sure you have the required dependencies:
+```bash
+pip install fastapi uvicorn jinja2
+```
+
+Then start the viewer server:
+```bash
+python viewer.py
+```
+Open your browser to `http://localhost:8000` to monitor the backlog visually!
+
 ## 🧠 How the Architecture Works
 This loop operates on a 4-layer architecture to prevent AI hallucinations and infinite loops:
 

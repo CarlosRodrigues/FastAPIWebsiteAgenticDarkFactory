@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ontology Database Viewer</title>
+    <!-- Use Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --jira-sidebar: #fafbfc;
+            --jira-blue: #0052cc;
+            --jira-text: #172b4d;
+            --jira-subtext: #5e6c84;
+            --jira-bg: #ffffff;
+            --jira-border: #dfe1e6;
+            --jira-hover: #ebecf0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--jira-text);
+            background-color: var(--jira-bg);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 260px;
+            background-color: var(--jira-sidebar);
+            border-right: 1px solid var(--jira-border);
+            display: flex;
+            flex-direction: column;
+            padding: 24px 16px;
+        }
+
+        .sidebar-brand {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--jira-text);
+        }
+
+        .sidebar-item {
+            padding: 8px 12px;
+            border-radius: 3px;
+            color: var(--jira-subtext);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin-bottom: 4px;
+        }
+
+        .sidebar-item:hover, .sidebar-item.active {
+            background-color: var(--jira-hover);
+            color: var(--jira-blue);
+            text-decoration: none;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--jira-bg);
+            overflow-y: auto;
+        }
+
+        .header {
+            padding: 24px 40px;
+            border-bottom: 1px solid var(--jira-border);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: var(--jira-subtext);
+            margin-bottom: 8px;
+        }
+
+        .content-area {
+            padding: 24px 40px;
+        }
+
+        .feature-card {
+            border: 1px solid var(--jira-border);
+            border-radius: 3px;
+            margin-bottom: 24px;
+            background: #fff;
+            box-shadow: 0 1px 1px rgba(9, 30, 66, 0.25), 0 0 1px rgba(9, 30, 66, 0.31);
+        }
+
+        .feature-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--jira-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fafbfc;
+        }
+
+        .feature-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 3px;
+            background-color: #dfe1e6;
+            color: #42526e;
+        }
+
+        .status-badge.pending { background-color: #dfe1e6; color: #42526e; }
+        .status-badge.in_progress { background-color: #deebff; color: #0052cc; }
+        .status-badge.completed { background-color: #e3fcef; color: #006644; }
+
+        .story-list {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        .story-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--jira-border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .story-item:last-child {
+            border-bottom: none;
+        }
+
+        .story-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .story-content {
+            font-size: 0.95rem;
+        }
+
+        .story-role { font-weight: 600; color: var(--jira-text); }
+        .story-action { color: var(--jira-text); }
+        .story-value { color: var(--jira-subtext); font-style: italic; }
+
+        .ac-list {
+            margin-top: 12px;
+            padding-left: 24px;
+            font-size: 0.85rem;
+            color: var(--jira-subtext);
+        }
+
+        .ac-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        
+        .type-icon {
+            border-radius: 3px;
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+        .icon-epic { background-color: #904ee2; }
+        .icon-story { background-color: #65ba43; }
+
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <i class="bi bi-diagram-3-fill" style="color: var(--jira-blue); font-size: 1.5rem;"></i>
+            Ontology DB
+        </div>
+        
+        <div style="font-size: 0.75rem; font-weight: 700; color: var(--jira-subtext); margin: 16px 0 8px 12px; text-transform: uppercase;">Views</div>
+        <a href="/" class="sidebar-item {% if active_page == 'index' or not active_page %}active{% endif %}">
+            <i class="bi bi-view-list"></i>
+            All Issues
+        </a>
+        <a href="/board" class="sidebar-item {% if active_page == 'board' %}active{% endif %}">
+            <i class="bi bi-kanban"></i>
+            Board
+        </a>
+        <a href="/features" class="sidebar-item {% if active_page == 'features' %}active{% endif %}">
+            <i class="bi bi-box-seam"></i>
+            Features (Epics)
+        </a>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <div class="breadcrumb">Projects / Ontology / Issues</div>
+            <h1>Backlog</h1>
+        </div>
+        
+        <div class="content-area">
+            {% if not features %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i> No features found in the database.
+                </div>
+            {% endif %}
+
+            {% for feature in features %}
+            <div class="feature-card">
+                <div class="feature-header">
+                    <div class="feature-title">
+                        <span class="type-icon icon-epic"><i class="bi bi-lightning-fill"></i></span>
+                        {{ feature.name }}
+                        <span style="font-size: 0.85rem; font-weight: 400; color: var(--jira-subtext); margin-left: 12px;">{{ feature.description }}</span>
+                    </div>
+                    <span class="status-badge {{ feature.status }}">{{ feature.status|replace('_', ' ') }}</span>
+                </div>
+                
+                <ul class="story-list">
+                    {% for story in feature.user_stories %}
+                    <li class="story-item">
+                        <div class="story-main">
+                            <div class="story-content">
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                                    <span class="type-icon icon-story"><i class="bi bi-bookmark-fill"></i></span>
+                                    <strong>US-{{ story.id }}</strong>
+                                </div>
+                                <div>
+                                    As a <span class="story-role">{{ story.role }}</span>, 
+                                    I want to <span class="story-action">{{ story.action }}</span> 
+                                    so that <span class="story-value">{{ story.value }}</span>
+                                </div>
+                            </div>
+                            <span class="status-badge {{ story.status }}">{{ story.status|replace('_', ' ') }}</span>
+                        </div>
+                        
+                        {% if story.acceptance_criteria %}
+                        <div class="ac-list">
+                            <div style="font-weight: 600; margin-bottom: 4px;">Acceptance Criteria:</div>
+                            {% for ac in story.acceptance_criteria %}
+                            <div class="ac-item">
+                                <i class="bi {{ 'bi-check-circle-fill text-success' if ac.passed else 'bi-circle text-secondary' }}"></i>
+                                {{ ac.description }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </li>
+                    {% else %}
+                    <li class="story-item" style="color: var(--jira-subtext); font-style: italic;">
+                        No user stories attached to this feature.
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</body>
+</html>
