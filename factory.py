@@ -36,9 +36,8 @@ def run_agent_step(agent_name, prompt, context_data):
         f.write(context_data)
     
     command = (
-        f"agy --sandbox \"{prompt}. Read context from {context_file}. "
-        f"Adhere to your persona in {AGENTS_FILE}.\" "
-        f"--auto-approve"
+        f"agy --sandbox --dangerously-skip-permissions --print \"{prompt}. Read context from {context_file}. "
+        f"Adhere to your persona in {AGENTS_FILE}.\""
     )
     
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
