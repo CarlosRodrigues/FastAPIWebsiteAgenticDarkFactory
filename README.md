@@ -57,7 +57,7 @@ Now, instruct the PO Architect agent to read your project.md, break it down into
 Run this command in your terminal:
 
 ```bash
-agy run "Analyze .commonai/workspace/project.md. Break the scope into Features, and each feature into User Stories with strict Acceptance Criteria. Use the graph-ontology-mapper skill to execute the raw SQLite INSERT statements against .commonai/ontology.db" --agent po-architect --auto-approve
+agy -p "Analyze .commonai/workspace/project.md. Break the scope into Features, and each feature into User Stories with strict Acceptance Criteria. Use the graph-ontology-mapper skill to execute the raw SQLite INSERT statements against .commonai/ontology.db" --agent po-architect --auto-approve
 ```
 
 ## Step 4: Start the Autonomous Loop
